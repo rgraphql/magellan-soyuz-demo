@@ -1,54 +1,78 @@
 import React from 'react'
-import logo from './logo.svg'
+import { rgraphql } from 'rgraphql'
 import './App.css'
 
-/*
-client = new SoyuzClient(schema, (msg: rgraphql.IRGQLClientMessage) => {
-    if (!sender) {
-        sender = this.rpc.startCall(
-            {
-                rgqlClientMessage: msg,
-                rpcId: ipc.RPC.RPC_RGQLClientMessage
-            },
-            (rmsg: ipc.IRPCMessage) => {
-                const smsg = rmsg.rgqlServerMessage
-                if (!smsg) {
-                    return
-                }
-                client.handleMessages([smsg])
-            }
-        )
-        return
-    }
+import { JSONDecoder, RunningQuery, SoyuzClient } from 'soyuz'
 
-    sender({
-        rgqlClientMessage: msg,
-        rpcId: ipc.RPC.RPC_RGQLClientMessage
-    })
-})
-*/
+import { schema } from './schema'
 
-class App extends React.Component {
+const AppDemoQuery = `{
+  counter
+  names
+  allPeople {
+    name
+    height
+  }
+}`
+
+interface AppProps {}
+
+interface AppState {
+  counter?: number
+  names?: string[]
+  allPeople?: any[]
+}
+
+class App extends React.Component<AppProps, AppState> {
+  private soyuzClient?: SoyuzClient
+  private query?: RunningQuery
+
+  constructor(params: {}) {
+    super(params)
+    this.state = {}
+  }
+
+  public componentWillMount() {
+      this.startClient()
+  }
+
   public render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <p>
-            Edit <code>src/App.tsx</code> and save to reload.
+            <code>{JSON.stringify(this.state, undefined, '\t')}</code>
           </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
         </header>
       </div>
     )
   }
+
+    private startClient() {
+        // TODO: connect websocket
+        // TODO: re-construct soyuz client is websocket reconnects
+        this.soyuzClient = new SoyuzClient(
+            schema,
+            (msg: rgraphql.IRGQLClientMessage) => {
+                // Transmit the message to the server.
+                // TODO
+                /* tslint:disable-next-line */
+                console.log('Transmitting message to server:', msg)
+            }
+        )
+        this.query = this.soyuzClient.parseQuery(AppDemoQuery)
+        this.query.attachHandler(
+            new JSONDecoder(
+                this.soyuzClient.getQueryTree().getRoot(),
+                this.query.getQuery(),
+                (val: any) => {
+                    if (val) {
+                        this.setState(val)
+                    }
+                }
+            )
+        )
+    }
 }
 
 export default App
