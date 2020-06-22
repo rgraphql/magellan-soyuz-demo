@@ -11,8 +11,10 @@
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "graphql": "^15.1.0",
+    "protobufjs": "^6.9.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-monaco-editor": "^0.36.0",
     "react-scripts": "3.4.1",
     "soyuz": "^0.6.0",
     "typescript": "~3.7.2"
@@ -20,6 +22,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "gen:proto": "make genproto",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "precommit": "lint-staged"

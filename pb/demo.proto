@@ -1,0 +1,24 @@
+syntax = "proto3";
+package demo;
+
+import "node_modules/rgraphql/rgraphql.proto";
+
+// RPC is the rpc type enum.
+enum RPC {
+  RPC_Unknown = 0;
+  RPC_Ping = 1;
+
+  RPC_RGQLClientMessage = 2;
+  RPC_RGQLServerMessage = 3;
+}
+
+// RPCMessage contains a RPC over the message bus.
+message RPCMessage {
+  // RPCId is the RPC identifier.
+  RPC rpc_id = 1;
+
+  // RGQLClientMessage is a client message.
+  .rgraphql.RGQLClientMessage rgql_client_message = 2;
+  // RGQLServerMessage is a server message.
+  .rgraphql.RGQLServerMessage rgql_server_message = 3;
+}

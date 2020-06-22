@@ -1,10 +1,10 @@
 import React from 'react'
-import { rgraphql } from 'rgraphql'
 import './App.css'
 
 import { JSONDecoder, RunningQuery, SoyuzClient } from 'soyuz'
-
 import { schema } from './schema'
+import { DialWebsocketClient } from './websocketClient'
+import { CodeViewer } from './CodeViewer'
 
 const AppDemoQuery = `{
   counter
@@ -33,46 +33,49 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   public componentWillMount() {
-      this.startClient()
+    this.startClient()
   }
 
   public render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <p>
-            <code>{JSON.stringify(this.state, undefined, '\t')}</code>
-          </p>
-        </header>
+        <CodeViewer
+            language="json"
+            data={JSON.stringify(this.state, undefined, '\t')}
+        />
       </div>
     )
   }
 
-    private startClient() {
-        // TODO: connect websocket
-        // TODO: re-construct soyuz client is websocket reconnects
-        this.soyuzClient = new SoyuzClient(
-            schema,
-            (msg: rgraphql.IRGQLClientMessage) => {
-                // Transmit the message to the server.
-                // TODO
-                /* tslint:disable-next-line */
-                console.log('Transmitting message to server:', msg)
-            }
-        )
-        this.query = this.soyuzClient.parseQuery(AppDemoQuery)
-        this.query.attachHandler(
-            new JSONDecoder(
-                this.soyuzClient.getQueryTree().getRoot(),
-                this.query.getQuery(),
-                (val: any) => {
-                    if (val) {
-                        this.setState(val)
-                    }
-                }
-            )
-        )
+  private async startClient() {
+    // TODO: connect websocket
+    // TODO: re-construct soyuz client is websocket reconnects
+    try {
+      this.soyuzClient = await DialWebsocketClient(
+        'ws://localhost:8093/ws',
+        schema
+      )
+    } catch (e) {
+      /* tslint:disable-next-line */
+      console.error('dial websocket client', e)
+      return
     }
+    if (!this.soyuzClient) {
+      return
+    }
+    this.query = this.soyuzClient.parseQuery(AppDemoQuery)
+    this.query.attachHandler(
+      new JSONDecoder(
+        this.soyuzClient.getQueryTree().getRoot(),
+        this.query.getQuery(),
+        (val: any) => {
+          if (val) {
+            this.setState(val)
+          }
+        }
+      )
+    )
+  }
 }
 
 export default App

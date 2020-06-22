@@ -4,7 +4,7 @@ package resolve
 
 import "context"
 import "github.com/rgraphql/magellan/resolver"
-import "github.com/rgraphql/magellan-soyuz-demo/server"
+import "github.com/rgraphql/magellan-soyuz-demo/server/simple"
 
 func ResolvePerson(rctx *resolver.Context, r *simple.PersonResolver) {
 	if r == nil {
