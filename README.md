@@ -42,6 +42,22 @@ The page will reload if you make edits.
 
 You will also see any lint errors in the console.
 
+The demo is a JSON view of the current resolver output of the following query:
+
+```graphql
+{
+  counter
+  names
+  allPeople {
+    name
+    height
+  }
+}
+```
+
+If you just see {} make sure you have run the demo server. You may need to
+refresh a few times. The demo code is quite brittle at the moment.
+
 ### `yarn test`
 
 Launches the test runner in the interactive watch mode.
