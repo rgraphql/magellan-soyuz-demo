@@ -11,8 +11,6 @@ require (
 	github.com/rgraphql/magellan v0.6.1
 	github.com/rgraphql/rgraphql v1.0.6-0.20200621035303-31dc902278af
 	github.com/sirupsen/logrus v1.6.0
-	google.golang.org/protobuf v1.23.0
-	github.com/rgraphql/rgraphql v1.0.6-0.20200621035303-31dc902278af
 	github.com/urfave/cli v1.22.4
 	google.golang.org/protobuf v1.23.0
 )

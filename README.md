@@ -14,7 +14,26 @@ WebSocket. It uses React components to demonstrate the features of the system.
 
 In the project directory, you can run:
 
-### `yarn start`
+### `magellan analyze`
+
+```bash
+cd ./server
+./compile.bash
+```
+
+This will analyze the code and re-generate the resolvers.
+
+### `yarn start` and `server`
+
+First start the Go server:
+
+```bash
+cd ./server
+go build -v
+./server
+```
+
+Next run: `yarn start`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
